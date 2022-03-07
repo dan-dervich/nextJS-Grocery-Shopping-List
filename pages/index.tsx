@@ -21,6 +21,7 @@ class Home extends Component<any, any>{
         })
       }
       render(): any{
+        // Access-Control-Allow-Origin: *
         return(
           <>
           <Head>

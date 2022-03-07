@@ -24,7 +24,8 @@ class SignUp extends Component<any, any>{
                     }),
                     method: "POST",
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
                       },
                 })
                 interface res {
