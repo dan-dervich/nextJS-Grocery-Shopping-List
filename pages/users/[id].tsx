@@ -94,7 +94,7 @@ class Users extends Component<any, any>{
         }
         }
         let chooseAvatar: any = async (e: any)=>{
-            let userName: string = e.target.nextElementSibling.innerHTML
+            let userName: string = e.target.parentNode.id
             const payload: Object = {
                 username: userName,
                 id: this.props.id
@@ -113,11 +113,11 @@ class Users extends Component<any, any>{
             document.cookie = 'username=' + token + '; path=/;expires=' + now.toUTCString() + ";" 
             window.location.replace('/groceries/' + this.props.id)
         }
+        let i = 0;
         return(
             <Grid.Container justify='center' alignItems='center' direction='row' style={{minHeight: '100vh'}}>
                 <Grid xl={12} justify="center" alignItems='center' direction='row'>
                 {this.props?.users?.users?.map((user: string)=>{
-                let rand: any = Math.floor(Math.random() * (7 - 0 + 1)) + 0;
                 type NormalColors = 'default' | 'primary' | 'secondary' | 'success'| 'warning'| 'error'| 'gradient';
                 let colors: NormalColors[] = [
                     'default',
@@ -128,8 +128,11 @@ class Users extends Component<any, any>{
                     'error',
                     'gradient'
                 ]
+                i++
                     return(
-                            <Avatar onClick={chooseAvatar} id={user} key={Math.floor(Math.random()*(this.props.users.length-0+1))+0} size='xl' color={colors[rand]} pointer squared text={user}/>
+                        <>
+                            <Avatar onClick={chooseAvatar} id={user} key={Math.floor(Math.random()*(this.props.users.length-0+1))+0} css={{color: 'white'}} size='xl' color={colors[i]} pointer squared text={user}/>
+                        </>
                         )
                 })}
                     </Grid>
