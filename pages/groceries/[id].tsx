@@ -21,7 +21,8 @@ class Groceries extends Component<any, any>{
     async (err: any, verifiedJwt: any) => {
         if (err) {
             console.log(err.message);
-            return window.location.replace('/auth/login')
+            // error herer:
+            // return window.location.replace('/auth/login')
         } else {
             if(verifiedJwt.payload.username.length > 0){
               this.setState({user: verifiedJwt.payload.username})
