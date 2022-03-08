@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import { Grid, Input, Button, Spacer, Card, Checkbox, Text } from '@nextui-org/react'
+import { Grid, Input, Button, Spacer, Card, Checkbox, Text, Link } from '@nextui-org/react'
 import jwt from 'jsonwebtoken'
 
 
@@ -95,8 +95,14 @@ class Groceries extends Component<any, any>{
         window.location.reload()
       }
     }
+    let logOut: any = (e: any)=>{
+      e.preventDefault()
+      document.cookie.split(';').forEach(cookie => document.cookie = cookie.replace(/^ +/, '').replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`));
+      return window.location.replace('/')
+    }
     return(
             <Grid.Container justify='center' alignItems='center' direction='column' style={{minHeight: '100vh', width: '100%'}}>
+          <Link color='error' style={{position: 'fixed', top: 10, right: 10}} block onClick={logOut}>Log Out</Link>
         <form onSubmit={submitHandler} style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: "row", flexWrap: 'wrap'}}>
         <Input type='text' labelPlaceholder='Comida/Item necesitado' underlined/>
         <Spacer x={1} y={1}/>
