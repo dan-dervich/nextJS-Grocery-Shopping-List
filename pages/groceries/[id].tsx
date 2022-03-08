@@ -22,7 +22,7 @@ class Groceries extends Component<any, any>{
         if (err) {
             console.log(err.message);
             // error herer:
-            return window.location.replace('/auth/login')
+            // return window.location.replace('/auth/login')
         } else {
             if(verifiedJwt.payload.username.length > 0){
               this.setState({user: verifiedJwt.payload.username})
