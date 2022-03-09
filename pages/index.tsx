@@ -1,10 +1,14 @@
 import { Component } from 'react'
 import jwt from 'jsonwebtoken'
 import Head from 'next/head'
-import { Button, Grid, Spacer, Text } from '@nextui-org/react'
+import { Button, Card, Grid, Spacer, Text } from '@nextui-org/react'
 
 
 class Home extends Component<any, any>{
+  constructor(props: any){
+    super(props)
+    this.state = {width: '0'}
+  }
   componentDidMount(){
     let cookieValue:any = document.cookie.split("username=").join("")
     jwt.verify(cookieValue,
@@ -19,28 +23,38 @@ class Home extends Component<any, any>{
           }
           }
         })
+        if(window.innerWidth < 1000){
+        this.setState({width: window.innerWidth})
+        } else{
+          this.setState({width: '55%'})
+        }
       }
       render(): any{
-        // Access-Control-Allow-Origin: *
         return(
           <>
           <Head>
             <title>Web Para anotar compras hecha por: Dan Dervich</title>
           </Head>
-          <Grid.Container justify='center' alignItems='center' style={{ minHeight: '100vh', backgroundColor: '#ced2d2'}}>
-            <div style={{background: "#f0efe9", width: '100%', minHeight: '100vh', borderRadius: '5px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
-              <Text size="3em" css={{color: '#222'}} h1><b style={{fontWeight: 'bolder'}}>Te Olividas La Lista Para El Super Seguido?</b> <br /> <span style={{fontSize: '.8em', color: '#21201c'}}>Aca podes guardar todas tus compras para vos y tu familia con <br /> facilidad sin tener el problema de olvidarse la lista. </span></Text>
-              <Spacer y={2} />
-              <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}>
-                <a href='/auth/login'>
-              <Button ghost color="warning">Ingresar</Button>
+          <Grid.Container justify='center' alignItems='center' direction='row' style={{minHeight: '100vh', backgroundColor: '#d9e8fc'}}>
+          <Grid xl={6} lg={6} style={{padding: 20, textAlign: 'center'}}>
+              <Text css={{color: '#222'}} h1><b style={{fontWeight: 'bolder'}}>Te Olividas La Lista Para El Super Seguido?</b><span style={{fontSize: '.8em', color: '#21201c'}}>Aca podes guardar todas tus compras para vos y tu familia con facilidad sin tener el problema de olvidarse la lista. </span></Text>
+            </Grid>
+              <Grid xl={6} lg={6} md={10} sm={12} xs={12} justify="center" alignItems='center'>
+              <Card shadow style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', width: this.state.width, textAlign: 'center'}}>
+                <Text style={{textAlign: 'center'}} h2>Nunca mas te olvides la lista del supermercado.</Text>
+                <Spacer y={1} />
+                <img src='/groceries.svg' width="60%" />
+                <Spacer y={1} />
+                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap',}}>
+                <a style={{margin: 20}} href='/auth/login'>
+              <Button ghost css={{"&:hover":{background: '#2b3e6a', color: 'white'}, color: '#222', borderColor: '#2b3e6a'}} auto>Ingresar</Button>
                 </a>
-              <Spacer x={2} />
-              <a href='/auth/sign-up'>
-              <Button color="warning">Crear Cuenta</Button>
+              <a style={{margin: 20}} href='/auth/sign-up'>
+              <Button auto css={{background: '#2b3e6a'}}>Crear Cuenta</Button>
               </a>
-              </div>
-            </div>
+                </div>
+            </Card>
+              </Grid>
           </Grid.Container>
           </>
         )

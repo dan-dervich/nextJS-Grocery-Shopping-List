@@ -131,7 +131,7 @@ class Users extends Component<any, any>{
                 i++
                     return(
                         <>
-                            <Avatar onClick={chooseAvatar} id={user} key={Math.floor(Math.random()*(this.props.users.length-0+1))+0} css={{color: 'white'}} size='xl' color={colors[i]} pointer squared text={user}/>
+                            <Avatar onClick={chooseAvatar} id={user} key={Math.floor(Math.random()*(this.props.users.length-0+1))+0} css={{color: 'white', margin: 10}} size='xl' color={colors[i]} pointer squared text={user}/>
                         </>
                         )
                 })}
