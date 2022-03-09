@@ -8,6 +8,7 @@ class Users extends Component<any, any>{
         const users: any = await res.json()
         return { id: ctx.query.id, users}
     }
+
     constructor(props: any){
         super(props)
         this.state = {userState: ""}
@@ -36,7 +37,6 @@ class Users extends Component<any, any>{
                         console.log(data);
                         
                         if(data.status == true){
-                            document.cookie.split(';').forEach(cookie => document.cookie = cookie.replace(/^ +/, '').replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`));
                             const payload: Object = {
                                 username: user,
                                 id: this.props.id,

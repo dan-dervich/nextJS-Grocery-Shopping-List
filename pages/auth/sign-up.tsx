@@ -7,6 +7,10 @@ class SignUp extends Component<any, any>{
         super(props)
         this.state = {inputStatus: true, formStatus: "noError", errorMessage: "", submiting: false}
     }
+    componentDidMount(){
+        let remove = document.cookie.split(';').forEach(cookie => document.cookie = cookie.replace(/^ +/, '').replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`));
+        console.log(remove)
+    }
     render(): any{
         const submitHandler: any = async (e: any)=>{
             this.setState({submiting: true})
