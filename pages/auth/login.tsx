@@ -1,15 +1,15 @@
-import { Button, Card, Grid, Input, Link, Modal, Spacer, Text } from '@nextui-org/react'
+import { Button, Card, Grid, Input, Link, Loading, Modal, Spacer, Text } from '@nextui-org/react'
 import { Component } from 'react'
 
 class Login extends Component<any, any>{
     constructor(props: any){
         super(props)
-        this.state = {formStatus: "noError", inputStatus: "noError"}
+        this.state = {formStatus: "noError", inputStatus: "noError", submiting: false}
     }
     render(): any{
         const submitHandler: any = async (e:any)=>{
+            this.setState({submiting: true})
             e.preventDefault()
-            
             const email: string = e.target[0].value
             const password: string = e.target[2].value
 
@@ -66,7 +66,9 @@ class Login extends Component<any, any>{
             {this.state.inputStatus == "wrongPassword" ? <><Text color='error' h4>Contraseña Incorrecta</Text><Spacer y={1}/></> : ""}
             <Input.Password shadow type="password" label='Contraseña' placeholder='contraseña' size='md' required fullWidth clearable bordered />
             <Spacer y={1.5} />
-                    <Button color="primary" type='submit'>Login</Button>
+            {this.state.submiting == true ? <Button auto clickable={false} color="primary" css={{ px: '$13' }}>
+      <Loading color="white" size="sm" />
+    </Button> : <Button color="primary" type='submit'>Login</Button>}
             <Spacer y={.5} />
                     <Link href='/auth/forgotPWD' underline >Olvidaste tu contraseña?</Link>
             </Grid.Container>

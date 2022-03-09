@@ -1,14 +1,15 @@
-import { Button, Card, Grid, Input, Link, Modal, Spacer, Text } from '@nextui-org/react'
+import { Button, Card, Grid, Input, Link, Loading, Modal, Spacer, Text } from '@nextui-org/react'
 import { Component } from 'react'
 
 
 class SignUp extends Component<any, any>{
     constructor(props: any){
         super(props)
-        this.state = {inputStatus: true, formStatus: "noError", errorMessage: ""}
+        this.state = {inputStatus: true, formStatus: "noError", errorMessage: "", submiting: false}
     }
     render(): any{
         const submitHandler: any = async (e: any)=>{
+            this.setState({submiting: true})
             e.preventDefault()
             
             const email: string = e.target[0].value
@@ -63,9 +64,7 @@ class SignUp extends Component<any, any>{
             <Modal open={this.state.formStatus !== "noError"}>
                 <Modal.Body>
                     <Grid.Container justify="center" direction='column' alignItems="center">
-                        <Text style={{textAlign: 'center'}} h3>Hubo un Error porfavor contactar al dueño de este proyecto si sigue este error o intentar denuevo en un rato: </Text>
-                    <Link underline style={{textAlign: 'center'}} href="mailto:dandervich@hotmail.com">dandervich@hotmail.com</Link>
-                    <p style={{textAlign: 'center'}}>por favor decirle en el email este mensaje: &quot;{this.state.errorMessage}&quot;</p>
+                        <Text style={{textAlign: 'center'}} h3>Hubo un error guardando su email en nuestros servidores porfavor intentalo denuevo en un rato.</Text>
                     </Grid.Container>
                 </Modal.Body>
             </Modal>
@@ -87,7 +86,9 @@ class SignUp extends Component<any, any>{
             {this.state.inputStatus ? ' ' : <><Text color='error' style={{width: '100%'}} h4>Las Contraseñas no coinciden</Text> <Spacer y={1.5} /> </>}
             <Input.Password shadow type="password" label='Confirmar Contraseña' placeholder='contraseña' size='md' required onInput={inputHandler} clearable fullWidth bordered />
             <Spacer y={1.5} />
-            {this.state.inputStatus ? <Button color="primary" type='submit' >Crear</Button> : <Button color="primary" type='submit' disabled >Crear</Button>}
+            {this.state.inputStatus ? this.state.submiting == true ? <Button auto clickable={false} color="primary" css={{ px: '$13' }}>
+      <Loading color="white" size="sm" />
+    </Button> : <Button color="primary" type='submit'>Login</Button> : <Button color="primary" type='submit' clickable={false} disabled >Crear</Button>}
             <Spacer y={.5} />
             <Link href='/auth/forgotPWD' underline >Olvidaste tu contraseña?</Link>
             </Grid.Container>
