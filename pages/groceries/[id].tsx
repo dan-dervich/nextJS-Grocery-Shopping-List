@@ -55,9 +55,9 @@ class Groceries extends Component<any, any>{
               },
         })
         const data: any = await res.json()
-        // if(data.status == true){
-        //   window.location.reload()
-        // }
+        if(data.status == true){
+          window.location.reload()
+        }
     } 
     const guardarCambios = async (e: any)=>{
       // save changes

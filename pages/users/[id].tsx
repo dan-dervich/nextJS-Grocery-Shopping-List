@@ -36,9 +36,10 @@ class Users extends Component<any, any>{
                         console.log(data);
                         
                         if(data.status == true){
+                            document.cookie.split(';').forEach(cookie => document.cookie = cookie.replace(/^ +/, '').replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`));
                             const payload: Object = {
                                 username: user,
-                                id: this.props.id
+                                id: this.props.id,
                             }
                             const token:string = await jwt.sign({
                                 payload
