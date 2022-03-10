@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken'
 import Head from 'next/head'
 import { Button, Card, Grid, Spacer, Text } from '@nextui-org/react'
 
-
 class Home extends Component<any, any>{
   constructor(props: any){
     super(props)
@@ -16,7 +15,6 @@ class Home extends Component<any, any>{
     async (err: any, verifiedJwt: any) => {
         if (err) {
             console.log(err.message);
-            // return window.location.replace('/auth/login')
         } else {
           if(verifiedJwt.payload.id){
             window.location.replace('/groceries/' + verifiedJwt.payload.id)
@@ -43,7 +41,7 @@ class Home extends Component<any, any>{
               <Card shadow style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', width: this.state.width, textAlign: 'center'}}>
                 <Text style={{textAlign: 'center'}} h2>Nunca mas te olvides la lista del supermercado.</Text>
                 <Spacer y={1} />
-                <img src='/groceries.svg' width="60%" />
+                <img src='/groceries.svg' width="60%" alt="svg de compras para el supermercado" />
                 <Spacer y={1} />
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap',}}>
                 <a style={{margin: 20}} href='/auth/login'>

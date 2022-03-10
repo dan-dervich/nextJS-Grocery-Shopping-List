@@ -4,7 +4,7 @@ import { Component } from 'react'
 class Login extends Component<any, any>{
     constructor(props: any){
         super(props)
-        this.state = {formStatus: "noError", inputStatus: "noError", submiting: false}
+        this.state = {formStatus: "noError",errorMessage: '', inputStatus: "noError", submiting: false}
     }
     componentDidMount(){
         let remove = document.cookie.split(';').forEach(cookie => document.cookie = cookie.replace(/^ +/, '').replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`));
@@ -38,7 +38,44 @@ class Login extends Component<any, any>{
             } else if(data.status == "wrongPassword"){
                 this.setState({inputStatus: "wrongPassword"})
             } else if(data.status == "errorWithInput"){
-                this.setState({formStatus: "errorWithInput"})
+                this.setState({formStatus: false, errorMessage: "errorWithInput"})
+            }
+        }
+        const feedbackHandler = async (e: any)=>{
+            e.preventDefault()
+            const email = e.target[0].value
+            if(this.state.errorMessage == 'errorWithInput'){
+                // error saving user in the db maybe check if username is already in use?
+                const res: any = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/feedback', {
+                    body: JSON.stringify({
+                        email: email,
+                        feedback: 'with input on login page please check logs and maybe to some testing to see if the server is still alive?'
+                    }), 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    }
+                })
+                const {status} = res.json()
+                if(status == true){
+                    window.location.reload()
+                } else{
+                    const res1: any = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/feedback', {
+                        body: JSON.stringify({
+                            email: email,
+                        feedback: 'with input on login page please check logs and maybe to some testing to see if the server is still alive?'
+                        }), 
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        }
+                    })
+                    const {status} = res1.json()
+                    console.log(status);
+                    
+                }
             }
         }
         return(
@@ -46,10 +83,15 @@ class Login extends Component<any, any>{
             <Modal open={this.state.formStatus !== "noError"}>
                 <Modal.Body>
                     <Grid.Container justify="center" direction='column' alignItems="center">
-                                        <Text style={{textAlign: 'center'}} h3>Hubo un Error porfavor contactar al dueño de este proyecto si sigue este error o intentar denuevo en un rato: </Text>
-
-                    <Link underline style={{textAlign: 'center'}} href="mailto:dandervich@hotmail.com">dandervich@hotmail.com</Link>
-                    <p style={{textAlign: 'center'}}>por favor decirle en el email este mensaje: &quot;{this.state.formStatus}&quot;</p>
+                        {this.state.errorMessage == 'errorWithInput' ? <>
+                        <Text style={{textAlign: 'center'}} h3>Hubo un error creando tu usuario porfavor intentelo denuevo en un rato. Si el error continua pruebe recuperar su contraseña o ponga su email abajo y le enviara el error a nuestros programadores.</Text>
+                        </> : ''}
+                        <form style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}} onSubmit={feedbackHandler}>
+                            <Spacer y={1.5} />
+                        <Input shadow bordered labelPlaceholder='Su Email' type="email" />
+                            <Spacer y={1.5} />
+                        <Button  type='submit'>Enviar Feedback</Button>
+                        </form>
                     </Grid.Container>
                 </Modal.Body>
             </Modal>

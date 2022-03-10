@@ -46,9 +46,11 @@ class SignUp extends Component<any, any>{
                     window.location.replace('/users/' + data.id)
                 } else if(data.status == "noPasswordSentToBackend"){
                     //! error
+                    // No se envio ninguna contraseña a nuestros servidores porfavor intentelo denuevo en un rato
                     this.setState({formStatus: false, errorMessage: "noPasswordSentToBackend"})
                 } else if(data.status == "noEmailSentToBackend"){
                     //! error
+                    // No se envio ningun email a nuestros servidores porfavor intentelo denuevo en un rato
                     this.setState({formStatus: false, errorMessage: "noEmailSentToBackend"})
                 }
             }
@@ -63,12 +65,127 @@ class SignUp extends Component<any, any>{
                 this?.setState({inputStatus: false})
             }
         }
+        const feedbackHandler = async (e: any)=>{
+            e.preventDefault()
+            const email = e.target[0].value
+            if(this.state.errorMessage == 'errorSavingUser'){
+                // error saving user in the db maybe check if username is already in use?
+                const res: any = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/feedback', {
+                    body: JSON.stringify({
+                        email: email,
+                        feedback: 'error saving user please check logs and maybe to some testing to see if the server is still alive?'
+                    }), 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    }
+                })
+                const {status} = res.json()
+                if(status == true){
+                    window.location.reload()
+                } else{
+                    const res1: any = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/feedback', {
+                        body: JSON.stringify({
+                            email: email,
+                            feedback: 'error saving user please check logs and maybe to some testing to see if the server is still alive?'
+                        }), 
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        }
+                    })
+                    const {status} = res1.json()
+                    console.log(status);
+                    
+                }
+            } else if(this.state.errorMessage == 'noPasswordSentToBackend'){
+                // no password sent to backend maybe check the e.target or if user inserted a blank input
+                const res: any = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/feedback', {
+                    body: JSON.stringify({
+                        email: email,
+                        feedback: 'error with password check input e.target and check if maybe blank inputs are allowed. also do some testing on the server cause it might be down?'
+                    }), 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    }
+                })
+                const {status} = res.json()
+                if(status == true){
+                    window.location.reload()
+                } else{
+                    const res1: any = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/feedback', {
+                        body: JSON.stringify({
+                            email: email,
+                            feedback: 'error with password check input e.target and check if maybe blank inputs are allowed. also do some testing on the server cause it might be down?'
+                        }), 
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        }
+                    })
+                    const {status} = res1.json()
+                    console.log(status);
+                    
+                }
+            } else if(this.state.errorMessage == 'noEmailSentToBackend'){
+                // no email sent to backend maybe check the e.target or if user inserted a blank input
+                const res: any = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/feedback', {
+                    body: JSON.stringify({
+                        email: email,
+                        feedback: 'error with email being sent to backend maybe check the e.target.value and stuff and if the server is still up and running?'
+                    }), 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    }
+                })
+                const {status} = res.json()
+                if(status == true){
+                    window.location.reload()
+                } else{
+                    const res1: any = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/feedback', {
+                        body: JSON.stringify({
+                            email: email,
+                            feedback: 'error with email being sent to backend maybe check the e.target.value and stuff and if the server is still up and running?'
+                        }), 
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        }
+                    })
+                    const {status} = res1.json()
+                    console.log(status);
+                    
+                }
+            }
+        }
         return(
             <>
             <Modal open={this.state.formStatus !== "noError"}>
                 <Modal.Body>
                     <Grid.Container justify="center" direction='column' alignItems="center">
-                        <Text style={{textAlign: 'center'}} h3>Hubo un error guardando su email en nuestros servidores porfavor intentalo denuevo en un rato.</Text>
+                        {this.state.errorMessage == 'errorSavingUser' ? <>
+                        <Text style={{textAlign: 'center'}} h3>Hubo un error creando tu usuario hay una posibilidad que ese email ya este en uso o que nuestros servidores esten fallando porfavor intentelo denuevo en un rato. Si el error continua pruebe recuperar su contraseña o ponga su email abajo y le enviara el error a nuestros programadores.</Text>
+                        </> : ''}
+                        {this.state.errorMessage == 'noPasswordSentToBackend' ? <>
+                        <Text style={{textAlign: 'center'}} h3>No se envio ninguna contraseña a nuestros servidores porfavor intentelo denuevo en un rato. Si el error continua porfavor ponga su email abajo y le enviara el error a nuestros programadores.</Text>
+                        </> : ''}
+                        {this.state.errorMessage == 'noEmailSentToBackend' ? <>
+                        <Text style={{textAlign: 'center'}} h3>No se envio ningun email a nuestros servidores porfavor intentelo denuevo en un rato. Si el error continua porfavor ponga su email abajo y le enviara el error a nuestros programadores.</Text>
+                        </> : ''}
+                        <form style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}} onSubmit={feedbackHandler}>
+                            <Spacer y={1.5} />
+                        <Input shadow bordered labelPlaceholder='Su Email' type="email" />
+                            <Spacer y={1.5} />
+                        <Button  type='submit'>Enviar Feedback</Button>
+                        </form>
                     </Grid.Container>
                 </Modal.Body>
             </Modal>
