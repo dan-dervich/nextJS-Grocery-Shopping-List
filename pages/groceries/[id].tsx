@@ -7,7 +7,7 @@ class Groceries extends Component<any, any>{
   static async getInitialProps(ctx: any){
     const res = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/r/all-groceries/' + ctx.query.id)
     const data = await res.json()
-    return { data }
+    return { data, id: ctx.query.id}
   }
   constructor (props: any){
     super(props)
@@ -34,10 +34,8 @@ class Groceries extends Component<any, any>{
   render(): any{
     let data = this.props.data
       // const clearCookies = document.cookie.split(';').forEach(cookie => document.cookie = cookie.replace(/^ +/, '').replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`));
-      // console.log(clearCookies)
     const submitHandler = async (e: any)=>{
         e.preventDefault()
-        console.log(e.target)
         const comida: string = e.target[0].value
         const cantidad: string = e.target[1].value
                 
@@ -62,18 +60,20 @@ class Groceries extends Component<any, any>{
     const guardarCambios = async (e: any)=>{
       // save changes
       e.preventDefault()
-      let cuantity: string = e.target[0].value    
-      let item: string = e.target[1].value
-      const res: any = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/c/update/' + e.target[2].id, {
+      let item: string = e.target[0].value    
+      let cuantity: string = e.target[1].value
+      let groceryId:string = e.target[3].id
+      const res: any = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/c/update/' + e.target.id, {
         body: JSON.stringify({
           item: item,
           cuantity: cuantity,
-          appendedBy: this.state.user
+          appendedBy: this.state.user,
+          id: groceryId
         }),
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
+          'Access-Control-Allow-Origin': '*'
         },
       })
       const data: any = await res.json()
@@ -86,7 +86,6 @@ class Groceries extends Component<any, any>{
     const boughtItem = async (e: any)=>{
       // delete item
       let id = e.target.id
-      console.log(id);
       const res: any = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/d/grocery/' + id)
       const data: any = await res.json()
       if(data.status == true){
@@ -122,12 +121,13 @@ class Groceries extends Component<any, any>{
               <>
               <Spacer y={3}/>
               <Grid xs={12} sm={12} justify='center' alignItems='center' style={{flexWrap:'wrap'}}>
-                <form id={grocery._id} onSubmit={guardarCambios} style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
+                <form id={this.props.id} onSubmit={guardarCambios} style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
                   <Text h5>{grocery.appendedBy} el {grocery.createdOn}</Text>
+                <Spacer x={1.5}/>
                 <div style={{display: 'flex', justifyContent: 'row'}}>
-                  <Input underlined initialValue={grocery.grocery_item_name} width="80%"/>
+                  <Input underlined labelPlaceholder='Compra' initialValue={grocery.grocery_item_name} width="80%"/>
                 <Spacer x={1}/>
-                  <Input underlined initialValue={grocery.cuantity} width="20"/>
+                  <Input underlined labelPlaceholder='cantidad' initialValue={grocery.cuantity} width="20"/>
                   </div>
                 <Spacer x={1}/>
                 <div style={{display: 'flex', justifyContent: 'row'}}>
@@ -135,7 +135,7 @@ class Groceries extends Component<any, any>{
                   Listo
                   </Checkbox>
                 <Spacer x={1}/>
-                  <Button auto>Guardar Cambios</Button>
+                  <Button id={grocery._id} auto>Guardar Cambios</Button>
                 </div>
                 </form>
               </Grid>
