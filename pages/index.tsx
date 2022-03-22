@@ -35,11 +35,11 @@ class Home extends Component<any, any>{
           </Head>
           <Grid.Container justify='center' alignItems='center' direction='row' style={{minHeight: '100vh', backgroundColor: '#d9e8fc'}}>
           <Grid xl={6} lg={6} style={{padding: 20, textAlign: 'center'}}>
-              <Text css={{color: '#222'}} h1><b style={{fontWeight: 'bolder'}}>Te Olividas La Lista Para El Super Seguido?</b><span style={{fontSize: '.8em', color: '#21201c'}}>Aca podes guardar todas tus compras para vos y tu familia con facilidad sin tener el problema de olvidarse la lista. </span></Text>
+              <Text css={{color: '#222'}} h1><b style={{fontWeight: 'bolder'}}>¿Que hace falta comprar del supermercado? <br /> ¿Soles olvidarte la lista en casa? <br /> </b><span style={{fontSize: '.8em', color: '#21201c'}}>Aqui podes guardar todo lo que hace falta para vos y tu familia con facilidad. Todos los miembros de tu familia pueden agregar los productos deseados y que se vean instantaneamente  </span></Text>
             </Grid>
               <Grid xl={6} lg={6} md={10} sm={12} xs={12} justify="center" alignItems='center'>
               <Card shadow style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', width: this.state.width, textAlign: 'center'}}>
-                <Text style={{textAlign: 'center'}} h2>Nunca mas te olvides la lista del supermercado.</Text>
+                <Text style={{textAlign: 'center'}} h2>Nunca mas te preocupes por no tener a mano la lista del supermercado</Text>
                 <Spacer y={1} />
                 <img src='/groceries.svg' width="60%" alt="svg de compras para el supermercado" />
                 <Spacer y={1} />
