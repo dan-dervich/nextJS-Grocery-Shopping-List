@@ -31,7 +31,8 @@ class Home extends Component<any, any>{
         return(
           <>
           <Head>
-            <title>Web Para anotar compras hecha por: Dan Dervich</title>
+            <title>Una web para anotar todas tus necesidades para el supermercado</title>
+            <meta name="description" content="Una web para anotar todas tus necesidades para el supermercado sin preocupaciones de olvidarse la lista o que alguien se halla olvidado de subir algo ya que todo se actualiza instantaneamente." />
           </Head>
           <Grid.Container justify='center' alignItems='center' direction='row' style={{minHeight: '100vh', backgroundColor: '#d9e8fc'}}>
           <Grid xl={6} lg={6} style={{padding: 20, textAlign: 'center'}}>
