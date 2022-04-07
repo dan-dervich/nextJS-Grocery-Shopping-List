@@ -2,11 +2,14 @@ import { Component } from 'react'
 import jwt from 'jsonwebtoken'
 import Head from 'next/head'
 import { Button, Card, Grid, Spacer, Text } from '@nextui-org/react'
+import styles from '../styles/Home.module.css'
+import IndexCard from '../components/indexCard'
+import Link from 'next/link'
 
 class Home extends Component<any, any>{
   constructor(props: any){
     super(props)
-    this.state = {width: '0'}
+    this.state = {bgColor: '#bcb8a6'}
   }
   componentDidMount(){
     let cookieValue:any = document.cookie.split("username=").join("")
@@ -22,9 +25,16 @@ class Home extends Component<any, any>{
           }
         })
         if(window.innerWidth < 1000){
-        this.setState({width: window.innerWidth})
+          let ScrollHandler = ()=>{
+            if(window.scrollY > 700){
+              this.setState({bgColor: '#fff'})
+            } else{
+              this.setState({bgColor: '#bcb8a6'})
+            }
+          }
+          document.addEventListener('scroll', ScrollHandler)
         } else{
-          this.setState({width: '55%'})
+          this.setState({bgColor: '#bcb8a6'})
         }
       }
       render(): any{
@@ -33,28 +43,37 @@ class Home extends Component<any, any>{
           <Head>
             <title>Una web para anotar todas tus necesidades para el supermercado</title>
             <meta name="description" content="Una web para anotar todas tus necesidades para el supermercado sin preocupaciones de olvidarse la lista o que alguien se halla olvidado de subir algo ya que todo se actualiza instantaneamente." />
+            {/* <link rel="preconnect" href="https://fonts.googleapis.com" />
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /> */}
+            <link href="https://fonts.googleapis.com/css2?family=Rubik+Moonrocks&family=Send+Flowers&display=swap" rel="stylesheet"/> 
           </Head>
-          <Grid.Container justify='center' alignItems='center' direction='row' style={{minHeight: '100vh', backgroundColor: '#d9e8fc'}}>
-          <Grid xl={6} lg={6} style={{padding: 20, textAlign: 'center'}}>
-              <Text css={{color: '#222'}} h1><b style={{fontWeight: 'bolder'}}>¿Que hace falta comprar del supermercado? <br /> ¿Soles olvidarte la lista en casa? <br /> </b><span style={{fontSize: '.8em', color: '#21201c'}}>Aqui podes guardar todo lo que hace falta para vos y tu familia con facilidad. Todos los miembros de tu familia pueden agregar los productos deseados y que se vean instantaneamente  </span></Text>
-            </Grid>
-              <Grid xl={6} lg={6} md={10} sm={12} xs={12} justify="center" alignItems='center'>
-              <Card shadow style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', width: this.state.width, textAlign: 'center'}}>
-                <Text style={{textAlign: 'center'}} h2>Nunca mas te preocupes por no tener a mano la lista del supermercado</Text>
-                <Spacer y={1} />
-                <img src='/groceries.svg' width="60%" alt="svg de compras para el supermercado" />
-                <Spacer y={1} />
-                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap',}}>
-                <a style={{margin: 20}} href='/auth/login'>
-              <Button ghost css={{"&:hover":{background: '#2b3e6a', color: 'white'}, color: '#222', borderColor: '#2b3e6a'}} auto>Ingresar</Button>
-                </a>
-              <a style={{margin: 20}} href='/auth/sign-up'>
-              <Button auto css={{background: '#2b3e6a'}}>Crear Cuenta</Button>
-              </a>
-                </div>
-            </Card>
-              </Grid>
+          <div style={{backgroundColor: this.state.bgColor, transition: '.5s all ease'}}>
+          <Grid.Container justify='center' alignItems='center' direction='column' style={{minHeight: '100vh', backgroundColor: 'transparent'}}>
+            <Text style={{fontFamily: 'Rubik Moonrocks, cursive', textAlign: 'center'}} size="3em" color="white" h1>EL TIEMPO ES ORO PORQUE</Text>
+            <Text style={{fontFamily: 'Rubik Moonrocks, cursive', textAlign: 'center'}} size="3em" color="white" h1>REGALARLO?</Text>
+            <Spacer y={1.5} />
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}>
+              <Link href="/auth/login" passHref>
+              <Button css={{background: '#baab5e', fontSize: '20px'}} auto>Ingresar</Button>
+              </Link>
+              <Spacer x={1.5} />
+              <Link href="/auth/sign-up" passHref>
+              <Button css={{borderColor: '#baab5e', color: '#fff', fontSize: '20px'}} auto bordered>Crear Cuenta</Button>
+              </Link>
+            </div>
+            <a href='#down' id={styles.arrow}>
+            <svg width="22" height="22" viewBox="0 0 24 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10.9393 26.0607C11.5251 26.6464 12.4749 26.6464 13.0607 26.0607L22.6066 16.5147C23.1924 15.9289 23.1924 14.9792 22.6066 14.3934C22.0208 13.8076 21.0711 13.8076 20.4853 14.3934L12 22.8787L3.51472 14.3934C2.92893 13.8076 1.97919 13.8076 1.3934 14.3934C0.807611 14.9792 0.807611 15.9289 1.3934 16.5147L10.9393 26.0607ZM10.5 0L10.5 25H13.5L13.5 0L10.5 0Z" fill="black"/>
+              </svg>
+            </a>
           </Grid.Container>
+          <Grid.Container justify='center' alignItems='center' direction='column' id="down" style={{minHeight: '100vh', backgroundColor: 'transparent'}}>
+            <Grid xl={4}>
+            <IndexCard headerText="Anotador de compras" imageURL="/groceries.svg" descriptiveText="Esta parte de la web es para anotar compras y luego poder acederlas desde donde sea." />
+            </Grid>
+            {/* <IndexCard headerText="Anotador de compras" imageURL="/groceries.svg" descriptiveText="Esta parte de la web es para anotar compras y luego poder acederlas desde donde sea." /> */}
+          </Grid.Container>
+          </div>
           </>
         )
       }

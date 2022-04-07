@@ -4,11 +4,13 @@ body {
   padding: 0;
   margin: 0;
   font-family: 'Poppins', sans-serif;
+  scroll-behavior: smooth;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+  color: #baab5e
 }
 
 * {
