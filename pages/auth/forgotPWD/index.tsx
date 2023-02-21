@@ -10,7 +10,7 @@ class ForgotPWD extends Component<any, any>{
         const submitHandler = async (e: any)=>{
             e.preventDefault()
             const email: string = e.target[0].value
-            const res: any = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/auth/forgotPWD', {
+            const res: any = await fetch('http://localhost:3001/auth/forgotPWD', {
                 body: JSON.stringify({
                     email: email
                 }),
@@ -32,9 +32,7 @@ class ForgotPWD extends Component<any, any>{
             <>
             {/* sent */}
             {this.state.email == "sent" ? <Grid.Container style={{minHeight: '100vh', backgroundColor: "#e8e8e8"}}>
-                <Text css={{
-      textGradient: '45deg, $blue500 -20%, $pink500 50%'
-    }} h1>Email enviado porfavor apretar el link para restablecer su contraseña</Text>
+                <Text h1>Email enviado porfavor apretar el link para restablecer su contraseña</Text>
             </Grid.Container> : ''}
             {/* error */}
             {this.state.email == "error" ? <Grid.Container justify="center" alignItems="center" style={{minHeight: '100vh'}}>
@@ -58,7 +56,7 @@ class ForgotPWD extends Component<any, any>{
                     </form>
                     </Card.Body>
                     <Card.Footer>
-                        <Grid.Container justify="center" alignItems="center">
+                        <Grid.Container justify="center" alignItems="center" direction="column">
                         <Link href="/auth/login" underline>Ingresar a su cuenta</Link>
                         <Link href="/auth/sign-up" underline>Registrar una cuenta nueva</Link>
                         </Grid.Container>
