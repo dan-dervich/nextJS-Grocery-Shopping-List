@@ -131,11 +131,11 @@ class Groceries extends Component<any, any>{
                   </div>
                 <Spacer x={1}/>
                 <div style={{display: 'flex', justifyContent: 'row'}}>
-                <Checkbox id={grocery._id} checked={grocery.bought} color='gradient' labelColor="primary" line onClick={boughtItem}>
+                <Checkbox id={grocery.id} checked={grocery.bought} color='gradient' labelColor="primary" line onClick={boughtItem}>
                   Listo
                   </Checkbox>
                 <Spacer x={1}/>
-                  <Button id={grocery._id} auto>Guardar Cambios</Button>
+                  <Button id={grocery.id} auto>Guardar Cambios</Button>
                 </div>
                 </form>
               </Grid>
