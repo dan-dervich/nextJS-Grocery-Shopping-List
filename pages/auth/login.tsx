@@ -1,136 +1,144 @@
-import { Button, Card, Grid, Input, Link, Loading, Modal, Spacer, Text } from '@nextui-org/react'
-import { Component } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
+import AuthLayout, { authLayoutStyles as styles } from '../../components/AuthLayout'
+import Input from '../../components/ui/Input'
+import Button from '../../components/ui/Button'
+import Alert from '../../components/ui/Alert'
+import TextLink from '../../components/ui/TextLink'
 
-class Login extends Component<any, any>{
-    constructor(props: any){
-        super(props)
-        this.state = {formStatus: "noError",errorMessage: '', inputStatus: "noError", submiting: false}
-    }
-    componentDidMount(){
-        let remove = document.cookie.split(';').forEach(cookie => document.cookie = cookie.replace(/^ +/, '').replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`));
-        console.log(remove)
-    }
-    render(): any{
-        const submitHandler: any = async (e:any)=>{
-            this.setState({submiting: true})
-            e.preventDefault()
-            const email: string = e.target[0].value
-            const password: string = e.target[2].value
+type InputStatus = 'noError' | 'noUserWithThatEmailOrPassword' | 'wrongPassword'
 
-            const res: any = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/auth/login',  {
-                body: JSON.stringify({
-                    email: email,
-                    password: password
-                }), 
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                  },
-            })
-            const data: any = await res.json()
-            console.log(data)
-            if(data.status == "everythingIsOk"){
-                //* success
-                window.location.replace('/users/' + data.id)
-            } else if(data.status == "noUserWithThatEmailOrPassword"){
-                this.setState({inputStatus: "noUserWithThatEmailOrPassword"})
-            } else if(data.status == "wrongPassword"){
-                this.setState({inputStatus: "wrongPassword"})
-            } else if(data.status == "errorWithInput"){
-                this.setState({formStatus: false, errorMessage: "errorWithInput"})
-            }
-        }
-        const feedbackHandler = async (e: any)=>{
-            e.preventDefault()
-            const email = e.target[0].value
-            if(this.state.errorMessage == 'errorWithInput'){
-                // error saving user in the db maybe check if username is already in use?
-                const res: any = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/feedback', {
-                    body: JSON.stringify({
-                        email: email,
-                        feedback: 'with input on login page please check logs and maybe to some testing to see if the server is still alive?'
-                    }), 
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                    }
-                })
-                const {status} = res.json()
-                if(status == true){
-                    window.location.reload()
-                } else{
-                    const res1: any = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/feedback', {
-                        body: JSON.stringify({
-                            email: email,
-                        feedback: 'with input on login page please check logs and maybe to some testing to see if the server is still alive?'
-                        }), 
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Access-Control-Allow-Origin': '*'
-                        }
-                    })
-                    const {status} = res1.json()
-                    console.log(status);
-                    
-                }
-            }
-        }
-        return(
-            <>
-            <Modal open={this.state.formStatus !== "noError"}>
-                <Modal.Body>
-                    <Grid.Container justify="center" direction='column' alignItems="center">
-                        {this.state.errorMessage == 'errorWithInput' ? <>
-                        <Text style={{textAlign: 'center'}} h3>Hubo un error creando tu usuario porfavor intentelo denuevo en un rato. Si el error continua pruebe recuperar su contraseña o ponga su email abajo y le enviara el error a nuestros programadores.</Text>
-                        </> : ''}
-                        <form style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}} onSubmit={feedbackHandler}>
-                            <Spacer y={1.5} />
-                        <Input shadow bordered labelPlaceholder='Su Email' type="email" />
-                            <Spacer y={1.5} />
-                        <Button  type='submit'>Enviar Feedback</Button>
-                        </form>
-                    </Grid.Container>
-                </Modal.Body>
-            </Modal>
-            <Grid.Container justify='center' alignItems='center' style={{minHeight: '100vh', backgroundColor: "#e8e8e8"}}>
-                <Grid xs={11} sm={5} md={4} lg={3} xl={2}>
-            <Card shadow>
-                <Card.Header style={{color: 'transparent', borderBottom: '1px solid lightgrey'}}>
-            <Grid.Container justify='center' alignItems='center'>
-                    <Text h1>Login</Text>
-                    </Grid.Container>
-                </Card.Header>
-                <Card.Body style={{padding: 40, borderBottom: '1px solid lightgrey'}}>
-                    <form onSubmit={submitHandler}>
-            <Grid.Container alignItems='center' direction='column' style={{minHeight: '30vh', width: '100%'}}>
-            {this.state.inputStatus == "noUserWithThatEmailOrPassword" ? <><Text color='error' h4>No existe un usuario con ese email</Text><Spacer y={1}/></> : ""}
-            <Input clearable shadow type="email" label='Email' placeholder='example@example.com'size='md' required fullWidth bordered />
-            <Spacer y={1.5} />
-            {this.state.inputStatus == "wrongPassword" ? <><Text color='error' h4>Contraseña Incorrecta</Text><Spacer y={1}/></> : ""}
-            <Input.Password shadow type="password" label='Contraseña' placeholder='contraseña' size='md' required fullWidth clearable bordered />
-            <Spacer y={1.5} />
-            {this.state.submiting == true ? <Button auto clickable={false} color="primary" css={{ px: '$13' }}>
-      <Loading color="white" size="sm" />
-    </Button> : <Button color="primary" type='submit'>Login</Button>}
-            <Spacer y={.5} />
-                    <Link href='/auth/forgotPWD' underline >Olvidaste tu contraseña?</Link>
-            </Grid.Container>
-                    </form>
-                </Card.Body>
-                <Card.Footer>
-            <Grid.Container justify='center' alignItems='center' direction='column'>
-                <Text size="1.2em" style={{color: "#5e5e5e"}}>No tienes una cuenta?</Text>
-                <Link href="/auth/sign-up/" underline>Crear Una Cuenta</Link>
-                    </Grid.Container>
-                </Card.Footer>
-            </Card>
-                </Grid>
-            </Grid.Container>
-            </>
-        )
-    }
+function clearCookies() {
+  document.cookie.split(';').forEach((cookie) => {
+    document.cookie = cookie.replace(/^ +/, '').replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`)
+  })
 }
+
+function Login() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [inputStatus, setInputStatus] = useState<InputStatus>('noError')
+  const [backendError, setBackendError] = useState(false)
+  const [reportOpen, setReportOpen] = useState(false)
+  const [reportEmail, setReportEmail] = useState('')
+  const [reportSent, setReportSent] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+
+  useEffect(() => {
+    clearCookies()
+  }, [])
+
+  const submitHandler = async (e: FormEvent) => {
+    e.preventDefault()
+    setSubmitting(true)
+    setInputStatus('noError')
+    setBackendError(false)
+    try {
+      const res = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/auth/login', {
+        body: JSON.stringify({ email, password }),
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      })
+      const data: any = await res.json()
+      if (data.status == 'everythingIsOk') {
+        window.location.replace('/users/' + data.id)
+        return
+      } else if (data.status == 'noUserWithThatEmailOrPassword') {
+        setInputStatus('noUserWithThatEmailOrPassword')
+      } else if (data.status == 'wrongPassword') {
+        setInputStatus('wrongPassword')
+      } else if (data.status == 'errorWithInput') {
+        setBackendError(true)
+      }
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const feedbackHandler = async (e: FormEvent) => {
+    e.preventDefault()
+    const feedback = 'with input on login page please check logs and maybe to some testing to see if the server is still alive?'
+    await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/feedback', {
+      body: JSON.stringify({ email: reportEmail, feedback }),
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+    })
+    setReportSent(true)
+  }
+
+  return (
+    <AuthLayout title="Bienvenido de nuevo" subtitle="Ingresa a tu cuenta para ver tu lista">
+      {backendError ? (
+        <div style={{ marginBottom: 16 }}>
+          <Alert variant="error">
+            Hubo un error al ingresar. Intentalo de nuevo en un rato.{' '}
+            {!reportOpen && !reportSent ? (
+              <button
+                type="button"
+                onClick={() => setReportOpen(true)}
+                style={{ background: 'none', border: 'none', padding: 0, font: 'inherit', fontWeight: 700, color: 'inherit', cursor: 'pointer', textDecoration: 'underline' }}
+              >
+                Avisar a los programadores
+              </button>
+            ) : null}
+          </Alert>
+          {reportOpen && !reportSent ? (
+            <form onSubmit={feedbackHandler} style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+              <Input
+                type="email"
+                placeholder="tu@email.com"
+                required
+                value={reportEmail}
+                onChange={(e) => setReportEmail(e.target.value)}
+                style={{ flex: 1 }}
+              />
+              <Button type="submit" size="sm" variant="secondary">
+                Enviar
+              </Button>
+            </form>
+          ) : null}
+          {reportSent ? (
+            <p style={{ fontSize: 13.5, color: 'var(--color-text-secondary)', marginTop: 8 }}>Gracias, ya avisamos al equipo.</p>
+          ) : null}
+        </div>
+      ) : null}
+
+      <form className={styles.form} onSubmit={submitHandler}>
+        <Input
+          type="email"
+          label="Email"
+          placeholder="tu@email.com"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          error={inputStatus === 'noUserWithThatEmailOrPassword' ? 'No existe un usuario con ese email' : undefined}
+        />
+        <Input
+          type="password"
+          label="Contraseña"
+          placeholder="Tu contraseña"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          error={inputStatus === 'wrongPassword' ? 'Contraseña incorrecta' : undefined}
+        />
+        <div className={styles.linkRow}>
+          <TextLink href="/auth/forgotPWD" className={styles.link}>
+            ¿Olvidaste tu contraseña?
+          </TextLink>
+        </div>
+        <Button type="submit" fullWidth loading={submitting}>
+          Ingresar
+        </Button>
+      </form>
+
+      <p className={styles.footer}>
+        ¿No tienes una cuenta?{' '}
+        <TextLink href="/auth/sign-up" className={styles.link}>
+          Crear una cuenta
+        </TextLink>
+      </p>
+    </AuthLayout>
+  )
+}
+
 export default Login

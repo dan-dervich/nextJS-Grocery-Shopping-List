@@ -1,175 +1,161 @@
-import { Avatar, Button, Card, Grid, Input, Spacer, Text } from '@nextui-org/react'
+import { FormEvent, useState } from 'react'
 import jwt from 'jsonwebtoken'
-import { Component } from 'react'
 import NavBar from '../../components/NavBar'
+import Card from '../../components/ui/Card'
+import Input from '../../components/ui/Input'
+import Button from '../../components/ui/Button'
+import Avatar from '../../components/ui/Avatar'
+import styles from '../../styles/Users.module.css'
 
-class Users extends Component<any, any>{
-    static async getInitialProps(ctx: any){
-        const res: any = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/r/users/' + ctx.query.id)
-        const users: any = await res.json()
-        return { id: ctx.query.id, users}
+interface UsersProps {
+  id: string
+  users: { users: string[] }
+}
+
+function setSessionCookie(username: string, id: string) {
+  const payload = { username, id }
+  const token = jwt.sign({ payload }, process.env.JWT_SECRET as string, { algorithm: 'HS256' })
+  const expires = new Date()
+  expires.setTime(expires.getTime() + 8760 * 3600 * 1000)
+  document.cookie = 'username=' + token + '; path=/;expires=' + expires.toUTCString() + ';'
+}
+
+function Users({ id, users }: UsersProps) {
+  const [familyUsers, setFamilyUsers] = useState(users?.users || [])
+  const [newUser, setNewUser] = useState('')
+  const [userTaken, setUserTaken] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [editMode, setEditMode] = useState(false)
+  const [removingUser, setRemovingUser] = useState<string | null>(null)
+
+  const logOut = (e?: any) => {
+    if (e) e.preventDefault()
+    document.cookie.split(';').forEach((cookie) => {
+      document.cookie = cookie.replace(/^ +/, '').replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`)
+    })
+    window.location.replace('/')
+  }
+
+  const chooseAvatar = (user: string) => {
+    setSessionCookie(user, id)
+    window.location.replace('/groceries/' + id)
+  }
+
+  const addUser = async (e: FormEvent) => {
+    e.preventDefault()
+    if (familyUsers.includes(newUser)) {
+      setUserTaken(true)
+      return
     }
-
-    constructor(props: any){
-        super(props)
-        this.state = {userState: ""}
+    setSubmitting(true)
+    setUserTaken(false)
+    try {
+      const res = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/c/create-new-family-user/' + id, {
+        body: JSON.stringify({ user: newUser }),
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      })
+      const data: any = await res.json()
+      if (data.status == true) {
+        setSessionCookie(newUser, id)
+        window.location.replace('/groceries/' + id)
+      } else {
+        setUserTaken(true)
+      }
+    } finally {
+      setSubmitting(false)
     }
-    render(): any{
-        console.log(this.props);
-        const logOut: any = (e?: any)=>{
-            if(e) e.preventDefault()
-            document.cookie.split(';').forEach(cookie => document.cookie = cookie.replace(/^ +/, '').replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`));
-            return window.location.replace('/')
-        }
-        let addUser: any = async (e: any)=>{
-            e.preventDefault()
-            let user = e.target[0].value
-            if(this.props.users.users.length > 0){
-                for(let i = 0; i < this.props.users.users.length; i++){
-                    if(user == this.props.users.users[i]){
-                        this.setState({userState: "userTaken"})
-                    } else{
-                        const res: any = await fetch("https://next-js-grocery-shopping-list-backend.vercel.app/c/create-new-family-user/" + this.props.id, {
-                            body: JSON.stringify({
-                                user: user
-                            }),
-                            method: "POST",
-                            headers: {
-                                'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                              }
-                        })
-                        const data: any = await res.json()
-                        console.log(data);
+  }
 
-                        if(data.status == true){
-                            const payload: Object = {
-                                username: user,
-                                id: this.props.id,
-                            }
-                            const token:string = await jwt.sign({
-                                payload
-                            },
-                                process.env.JWT_SECRET as string, {
-                                algorithm: 'HS256'
-                            },
-                            )
-                            var now: Date = new Date();
-                            // 1 Year
-                            now.setTime(now.getTime() + 8760 * 3600 * 1000);
-                            // set cookie
-                            document.cookie = 'username=' + token + '; path=/;expires=' + now.toUTCString() + ";"
-                            window.location.replace('/groceries/' + this.props.id)
-                        } else{
-                        this.setState({userState: "userTaken"})
-                        }
-                    }
-                }
-            } else{
-                //? fetch/login?
-                const res: any = await fetch("https://next-js-grocery-shopping-list-backend.vercel.app/c/create-new-family-user/" + this.props.id, {
-                            body: JSON.stringify({
-                                user: user
-                            }),
-                            method: "POST",
-                            headers: {
-                                'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                              }
-                        })
-                        const data: any = await res.json()
-                        console.log(data);
-                        if(data.status == true){
-                            const payload: Object = {
-                                username: user,
-                                id: this.props.id
-                            }
-                            const token:string = await jwt.sign({
-                                payload
-                            },
-                                process.env.JWT_SECRET as string, {
-                                algorithm: 'HS256'
-                            },
-                            )
-                            var now: Date = new Date();
-                            // 3 hours
-                            now.setTime(now.getTime() + 8760 * 3600 * 1000);
-                            // set cookie
-                            document.cookie = 'username=' + token + '; path=/;expires=' + now.toUTCString() + ";"
-                            window.location.replace('/groceries/' + this.props.id)
-            }
-        }
-        }
-        let chooseAvatar: any = async (e: any)=>{
-            let userName: string = e.target.parentNode.id
-            const payload: Object = {
-                username: userName,
-                id: this.props.id
-            }
-            const token:string = await jwt.sign({
-                payload
-            },
-                process.env.JWT_SECRET as string, {
-                algorithm: 'HS256'
-            },
-            )
-            var now: Date = new Date();
-            // 3 hours
-            now.setTime(now.getTime() + 8760 * 3600 * 1000);
-            // set cookie
-            document.cookie = 'username=' + token + '; path=/;expires=' + now.toUTCString() + ";"
-            window.location.replace('/groceries/' + this.props.id)
-        }
-        let i = 0;
-        return(
+  const removeUser = async (user: string) => {
+    if (!window.confirm(`¿Quitar a ${user} de la familia?`)) return
+    setRemovingUser(user)
+    try {
+      const res = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/d/family-user/' + id, {
+        body: JSON.stringify({ user }),
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      })
+      const data: any = await res.json()
+      if (data.status == true) {
+        setFamilyUsers((prev) => prev.filter((u) => u !== user))
+      }
+    } finally {
+      setRemovingUser(null)
+    }
+  }
+
+  return (
+    <>
+      <NavBar title="¿Quién sos?" onLogout={logOut} />
+      <div className={styles.page}>
+        <div className={styles.content}>
+          {familyUsers.length > 0 ? (
             <>
-            <NavBar title="Quien Sos?" onLogout={logOut} />
-            <Grid.Container justify='center' alignItems='flex-start' direction='row' css={{alignContent: 'flex-start !important'}} style={{minHeight: 'calc(100vh - 57px)', width: '100%', backgroundColor: '#f7f7f5', padding: '24px 16px'}}>
-                <Grid xs={12} sm={10} md={8} lg={6} justify="center" alignItems='center'>
-                    {this.props?.users?.users?.length > 0 ? (
-                        <Grid.Container justify='center' alignItems='center' gap={1}>
-                            {this.props.users.users.map((user: string)=>{
-                                type NormalColors = 'default' | 'primary' | 'secondary' | 'success'| 'warning'| 'error'| 'gradient';
-                                let colors: NormalColors[] = [
-                                    'default',
-                                    'primary',
-                                    'secondary',
-                                    'success',
-                                    'warning',
-                                    'error',
-                                    'gradient'
-                                ]
-                                i++
-                                return(
-                                    <Grid key={user} style={{display: 'flex', justifyContent: 'center'}}>
-                                        <Avatar onClick={chooseAvatar} id={user} css={{color: 'white', margin: 10, cursor: 'pointer'}} size='xl' color={colors[i % colors.length]} pointer squared text={user}/>
-                                    </Grid>
-                                )
-                            })}
-                        </Grid.Container>
-                    ) : (
-                        <Text style={{textAlign: 'center', color: '#8a8a8a', width: '100%'}} h5>Todavia no hay usuarios en esta familia, crea el primero abajo</Text>
-                    )}
-                </Grid>
-                <Spacer y={2}/>
-                <Grid xs={12} sm={8} md={6} lg={4}>
-                    <Card shadow>
-                        <Card.Body style={{padding: 30}}>
-                            <form onSubmit={addUser}>
-                                <Grid.Container direction='column' justify='center' alignItems='center'>
-                                    {this.state.userState == 'userTaken' ? <><Text color='error' h5 style={{margin: 0}}>Usuario Tomado</Text><Spacer y={0.75}/></> : <><Text h4 style={{margin: 0}}>Usuario Nuevo:</Text><Spacer y={0.75}/></>}
-                                    <Input type="text" labelPlaceholder="Nombre" underlined fullWidth required/>
-                                    <Spacer y={1.2} />
-                                    <Button color="primary" type='submit' css={{width: '100%'}}>Guardar Usuario</Button>
-                                </Grid.Container>
-                            </form>
-                        </Card.Body>
-                    </Card>
-                </Grid>
-            </Grid.Container>
+              <div className={styles.sectionHeader}>
+                <p className={styles.sectionTitle}>{editMode ? 'Tocá la X para quitar a alguien' : 'Elegí tu usuario'}</p>
+                <button type="button" className={styles.editToggle} onClick={() => setEditMode((v) => !v)}>
+                  {editMode ? 'Listo' : 'Editar'}
+                </button>
+              </div>
+              <div className={styles.avatarGrid}>
+                {familyUsers.map((user) => (
+                  <div className={styles.avatarItem} key={user}>
+                    <div className={styles.avatarWrap}>
+                      <Avatar name={user} onClick={editMode ? undefined : () => chooseAvatar(user)} />
+                      {editMode ? (
+                        <button
+                          type="button"
+                          className={styles.removeBadge}
+                          aria-label={`Quitar a ${user}`}
+                          onClick={() => removeUser(user)}
+                          disabled={removingUser === user}
+                        >
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                            <path d="M6 6l12 12M18 6 6 18" stroke="#fff" strokeWidth="3" strokeLinecap="round" />
+                          </svg>
+                        </button>
+                      ) : null}
+                    </div>
+                    <span className={styles.avatarName}>{user}</span>
+                  </div>
+                ))}
+              </div>
             </>
-        )
-       }
+          ) : (
+            <p className={styles.emptyText}>Todavía no hay usuarios en esta familia, creá el primero abajo</p>
+          )}
+
+          <Card padding="26px 24px">
+            <form className={styles.form} onSubmit={addUser}>
+              <h2 className={styles.formTitle}>{userTaken ? 'Usuario tomado' : 'Usuario nuevo'}</h2>
+              <Input
+                type="text"
+                label="Nombre"
+                placeholder="Tu nombre"
+                required
+                value={newUser}
+                onChange={(e) => {
+                  setNewUser(e.target.value)
+                  setUserTaken(false)
+                }}
+                error={userTaken ? 'Ese nombre ya está en uso, elegí otro' : undefined}
+              />
+              <Button type="submit" fullWidth loading={submitting}>
+                Guardar usuario
+              </Button>
+            </form>
+          </Card>
+        </div>
+      </div>
+    </>
+  )
+}
+
+Users.getInitialProps = async (ctx: any) => {
+  const res = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/r/users/' + ctx.query.id)
+  const users = await res.json()
+  return { id: ctx.query.id, users }
 }
 
 export default Users

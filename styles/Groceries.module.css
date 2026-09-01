@@ -1,0 +1,110 @@
+.page {
+  min-height: calc(100vh - 61px);
+  width: 100%;
+  background: var(--color-bg);
+  padding: 20px 16px 110px;
+}
+
+.content {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.emptyState {
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 6px;
+}
+
+.emptyTitle {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.emptyText {
+  font-size: 14.5px;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.itemMeta {
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}
+
+.itemFields {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.itemFieldName {
+  flex: 1 1 160px;
+}
+
+.itemFieldQty {
+  flex: 0 1 100px;
+}
+
+.itemFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.itemBought .itemFieldName input {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}
+
+.fab {
+  position: fixed;
+  right: max(20px, env(safe-area-inset-right) + 12px);
+  bottom: max(20px, env(safe-area-inset-bottom) + 12px);
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  z-index: 90;
+  transition: transform 0.12s ease, background-color 0.15s ease;
+}
+
+.fab:hover {
+  background: var(--color-primary-hover);
+}
+
+.fab:active {
+  transform: scale(0.94);
+}
+
+.addForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

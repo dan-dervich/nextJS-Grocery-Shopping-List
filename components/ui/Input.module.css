@@ -1,0 +1,85 @@
+.field {
+  width: 100%;
+  text-align: left;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.inputWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: 15.5px;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-tint);
+}
+
+.hasToggle {
+  padding-right: 44px;
+}
+
+.error .input {
+  border-color: var(--color-error);
+}
+
+.error .input:focus {
+  box-shadow: 0 0 0 3px var(--color-error-tint);
+}
+
+.toggleBtn {
+  position: absolute;
+  right: 6px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--color-text-muted);
+}
+
+.toggleBtn:hover {
+  color: var(--color-text-secondary);
+  background: var(--color-bg);
+}
+
+.errorText {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--color-error);
+}
+
+.helpText {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}

@@ -1,18 +1,72 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* Brand */
+  --color-primary: #c7811f;
+  --color-primary-hover: #ad6f19;
+  --color-primary-tint: #fbf1e1;
+  --color-primary-text: #93610f;
+
+  /* Neutrals (warm) */
+  --color-bg: #faf8f4;
+  --color-surface: #ffffff;
+  --color-border: #e9e4da;
+  --color-text: #292520;
+  --color-text-secondary: #75695c;
+  --color-text-muted: #a89d8e;
+
+  /* Semantic */
+  --color-success: #2f7d4f;
+  --color-success-tint: #eaf6ee;
+  --color-error: #c8402c;
+  --color-error-tint: #fcecea;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-full: 999px;
+
+  /* Shadow */
+  --shadow-sm: 0 1px 3px rgba(41, 37, 32, 0.08);
+  --shadow-md: 0 6px 20px rgba(41, 37, 32, 0.1);
+  --shadow-lg: 0 16px 40px rgba(41, 37, 32, 0.16);
+
+  /* Font */
+  --font-sans: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  color-scheme: light;
+}
+
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-bg);
   scroll-behavior: smooth;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-  color: #baab5e
+  -webkit-font-smoothing: antialiased;
 }
 
 * {
   box-sizing: border-box;
+}
+
+a {
+  color: var(--color-primary-text);
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+#__next {
+  min-height: 100vh;
 }
