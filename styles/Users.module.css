@@ -1,0 +1,108 @@
+.page {
+  min-height: calc(100vh - 61px);
+  width: 100%;
+  background: var(--color-bg);
+  padding: 32px 16px 60px;
+}
+
+.content {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 0 20px;
+}
+
+.sectionTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin: 0;
+}
+
+.editToggle {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-primary-text);
+  background: var(--color-primary-tint);
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 6px 14px;
+  cursor: pointer;
+}
+
+.avatarGrid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 40px;
+}
+
+.avatarItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatarWrap {
+  position: relative;
+}
+
+.removeBadge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--color-surface);
+  background: var(--color-error);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.removeBadge:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.avatarName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  max-width: 76px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.emptyText {
+  text-align: center;
+  color: var(--color-text-muted);
+  margin-bottom: 32px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formTitle {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  text-align: center;
+}

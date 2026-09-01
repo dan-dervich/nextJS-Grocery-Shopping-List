@@ -1,0 +1,64 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  background:
+    radial-gradient(circle at 15% 10%, var(--color-primary-tint) 0%, transparent 45%),
+    var(--color-bg);
+}
+
+.logoLink {
+  margin-bottom: 28px;
+}
+
+.cardWrap {
+  width: 100%;
+  max-width: 400px;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 4px;
+}
+
+.subtitle {
+  font-size: 14.5px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin: 0 0 26px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 22px;
+  font-size: 14.5px;
+  color: var(--color-text-secondary);
+}
+
+.footerLinks {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.linkRow {
+  text-align: right;
+  margin-top: -6px;
+}
+
+.link {
+  font-size: 13.5px;
+  font-weight: 600;
+}

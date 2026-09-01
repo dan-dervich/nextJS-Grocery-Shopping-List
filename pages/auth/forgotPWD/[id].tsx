@@ -1,98 +1,97 @@
-import { Component } from 'react'
-import { withRouter } from 'next/router'
-import { Button, Card, Grid, Input, Link, Modal, Spacer, Text } from '@nextui-org/react'
+import { FormEvent, useEffect, useState } from 'react'
+import { withRouter, NextRouter } from 'next/router'
+import AuthLayout, { authLayoutStyles as styles } from '../../../components/AuthLayout'
+import Input from '../../../components/ui/Input'
+import Button from '../../../components/ui/Button'
+import Alert from '../../../components/ui/Alert'
+import TextLink from '../../../components/ui/TextLink'
 
-export default withRouter(class ForgotPWD extends Component<any, any>{
-    // check user existance:
-    static async getInitialProps(ctx: any) {
-        // fetch logic
-        const res = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/auth/check-user/' + ctx.query.id)
-        const data = await res.json()
-        return { data }
-    }
-    constructor(props: any) {
-        super(props)
-        this.state = { inputStatus: true, formStatus: "noError", errorMessage: "" }
-    }
-    componentDidMount() {
-        if (this.props.data.status == "error") {
-            this.props.router.push({
-                pathname: '/auth/login',
-            });
-        }
-    }
-    render(): any {
-        const inputHandler = async (e: any) => {
-            const pwd = document.getElementById('password1') as HTMLInputElement
-            if (e.target.value == pwd?.value) {
-                // match
-                this.setState({ inputStatus: true })
-            } else {
-                // error
-                this?.setState({ inputStatus: false })
-            }
-        }
-        const submitHandler: any = async (e: any) => {
-            e.preventDefault()
-            const password: string = e.target[0].value
-            const password1: string = e.target[2].value
-            if (password == password1) {
-                const res: any = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/auth/forgotPWD/' + this.props.router.query.id, {
-                    body: JSON.stringify({
-                        password: password
-                    }),
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                    },
-                })
-                const data: any = await res.json()
-                console.log(data)
-                if (data.status == true) {
-                    this.props.router.push('/auth/login')
-                } else {
-                    this.setState({ formStatus: "error", errorMessage: e.data.errorMessage })
-                }
-            } else {
-                this?.setState({ inputStatus: false })
-            }
-        }
-        return (
-            <>
-                <Modal open={this.state.formStatus !== "noError"}>
-                    <Modal.Body>
-                        <Grid.Container justify="center" direction='column' alignItems="center">
-                            <Text style={{ textAlign: 'center' }} h3>Hubo un Error porfavor contactar al dueño de este proyecto si sigue este error o intentar denuevo en un rato: </Text>
+interface ResetPasswordProps {
+  router: NextRouter
+  data: { status: string }
+}
 
-                            <Link underline style={{ textAlign: 'center' }} href="mailto:dandervich@hotmail.com">dandervich@hotmail.com</Link>
-                            <p style={{ textAlign: 'center' }}>por favor decirle en el email este mensaje: &quot;{this.state.errorMessage}&quot;</p>
-                        </Grid.Container>
-                    </Modal.Body>
-                </Modal>
-                <Grid.Container justify='center' alignItems='center' direction='column' style={{ backgroundColor: "#e8e8e8", minHeight: '100vh' }}>
-                    <Grid xs={11} sm={5} md={4} lg={3} xl={2}>
-                        <Card shadow>
-                            <Card.Header>
-                                <Text style={{ textAlign: 'center', width: '100%' }} h2>Cambiar Contraseña</Text>
-                            </Card.Header>
-                            <Card.Body style={{ padding: 30 }}>
-                                <form onSubmit={submitHandler}>
-                                    <Grid.Container justify='center' alignItems='center' direction='column'>
-                                        <Input.Password clearable bordered labelPlaceholder='Contraseña' id="password1" required />
-                                        <Spacer y={1} />
-                                        {this.state.inputStatus ? ' ' : <><Text color='error' style={{ width: '100%' }} h4>Las Contraseñas no coinciden</Text> <Spacer y={1.5} /> </>}
-                                        <Spacer y={.5} />
-                                        <Input.Password clearable bordered labelPlaceholder='Contraseña' onInput={inputHandler} required />
-                                        <Spacer y={2} />
-                                        {this.state.inputStatus ? <Button color="primary" type='submit' >Crear</Button> : <Button color="primary" type='submit' disabled >Crear</Button>}
-                                    </Grid.Container>
-                                </form>
-                            </Card.Body>
-                        </Card>
-                    </Grid>
-                </Grid.Container>
-            </>
-        )
+function ResetPassword({ router, data }: ResetPasswordProps) {
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [passwordsMatch, setPasswordsMatch] = useState(true)
+  const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+
+  useEffect(() => {
+    if (data.status == 'error') {
+      router.push({ pathname: '/auth/login' })
     }
-})
+  }, [data, router])
+
+  const submitHandler = async (e: FormEvent) => {
+    e.preventDefault()
+    if (password !== confirmPassword) {
+      setPasswordsMatch(false)
+      return
+    }
+    setSubmitting(true)
+    setError('')
+    try {
+      const res = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/auth/forgotPWD/' + router.query.id, {
+        body: JSON.stringify({ password }),
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      })
+      const resData: any = await res.json()
+      if (resData.status == true) {
+        router.push('/auth/login')
+      } else {
+        setError('Hubo un error al cambiar tu contraseña. Intentalo de nuevo en un rato.')
+      }
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <AuthLayout title="Cambiar contraseña" subtitle="Elige tu nueva contraseña">
+      {error ? (
+        <div style={{ marginBottom: 16 }}>
+          <Alert variant="error">
+            {error} Si el problema continúa, escribinos a{' '}
+            <TextLink href="mailto:dandervich@hotmail.com">dandervich@hotmail.com</TextLink>.
+          </Alert>
+        </div>
+      ) : null}
+      <form className={styles.form} onSubmit={submitHandler}>
+        <Input
+          type="password"
+          label="Nueva contraseña"
+          placeholder="Tu nueva contraseña"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <Input
+          type="password"
+          label="Confirmar contraseña"
+          placeholder="Repite tu nueva contraseña"
+          required
+          value={confirmPassword}
+          onChange={(e) => {
+            setConfirmPassword(e.target.value)
+            setPasswordsMatch(e.target.value === password)
+          }}
+          error={!passwordsMatch ? 'Las contraseñas no coinciden' : undefined}
+        />
+        <Button type="submit" fullWidth loading={submitting} disabled={!passwordsMatch}>
+          Guardar nueva contraseña
+        </Button>
+      </form>
+    </AuthLayout>
+  )
+}
+
+ResetPassword.getInitialProps = async (ctx: any) => {
+  const res = await fetch('https://next-js-grocery-shopping-list-backend.vercel.app/auth/check-user/' + ctx.query.id)
+  const data = await res.json()
+  return { data }
+}
+
+export default withRouter(ResetPassword)
